@@ -38,14 +38,14 @@ frontend mydevspace-frontend
         mode http
         http-request redirect scheme https code 301 unless { ssl_fc }
         http-request set-header X_Forwarded-Proto http
-        default_backend clickviral-backend
+        default_backend mydevspace-backend
 
 frontend mydevspace-frontend-https
-        bind *:443 ssl crt /etc/haproxy/certs/clickviral.tech.pem
+        bind *:443 ssl crt /etc/haproxy/certs/www.mydevspace.tech.pem
         http-request set-header X-Forwarded-Proto https
-        default_backend clickviral-backend
+        default_backend mydevspace-backend
 
 backend mydevspace-backend
         balance roundrobin
-        server 151666-web-01 100.25.190.21:80 check
-        server 151666-web-02 54.160.77.90:80 check
+        server 129892-web-01 54.165.43.168:80 check
+        server 129892-web-02 54.158.177.55:80 check
