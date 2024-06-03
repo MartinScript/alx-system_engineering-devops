@@ -1,42 +1,37 @@
 #!/usr/bin/python3
-""" Using what you did in the task #0, extend your Python script to export data
-in the JSON format."""
+"""python script to fetch Rest API for todo lists of employees"""
 
 import json
 import requests
 import sys
 
-base_url = "https://jsonplaceholder.typicode.com/"
-
-
-def do_request():
-    """request"""
-    response = requests.get(base_url + "users/")
-    if response.status_code != 200:
-        return print("Error: status_code:", response.status_code)
-    users = response.json()
-
-    response = requests.get(base_url + "todos/")
-    if response.status_code != 200:
-        return print("Error: status_code:", response.status_code)
-    todos = response.json()
-
-    data = {}
-    for user in users:
-        user_todos = [todo for todo in todos if todo.get("userId") == user.get("id")]
-        user_todos = [
-            {
-                "username": user.get("username"),
-                "task": todo.get("title"),
-                "completed": todo.get("completed"),
-            }
-            for todo in user_todos
-        ]
-        data[str(user.get("id"))] = user_todos
-
-    with open("todo_all_employees.json", "w") as file:
-        json.dump(data, file)
-
 
 if __name__ == "__main__":
-    do_request()
+    url = "https://jsonplaceholder.typicode.com/users"
+
+    resp = requests.get(url)
+    Users = resp.json()
+
+    users_dict = {}
+    for user in Users:
+        USER_ID = user.get("id")
+        USERNAME = user.get("username")
+        url = "https://jsonplaceholder.typicode.com/users/{}".format(USER_ID)
+        url = url + "/todos/"
+        resp = requests.get(url)
+
+        tasks = resp.json()
+        users_dict[USER_ID] = []
+        for task in tasks:
+            TASK_COMPLETED_STATUS = task.get("completed")
+            TASK_TITLE = task.get("title")
+            users_dict[USER_ID].append(
+                {
+                    "task": TASK_TITLE,
+                    "completed": TASK_COMPLETED_STATUS,
+                    "username": USERNAME,
+                }
+            )
+            """A little Something"""
+    with open("todo_all_employees.json", "w") as f:
+        json.dump(users_dict, f)
