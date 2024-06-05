@@ -11,13 +11,15 @@ import sys
 if __name__ == "__main__":
     eid = sys.argv[1]
     name = (
-        requests.get("http://jsonplaceholder.typicode.com/users/{}".format(eid))
+        requests.get("http://jsonplaceholder.typicode.com/users/{}"
+            .format(eid))
         .json()
         .get("name")
     )
     total_tasks = 0
     done_tasks = []
-    r = requests.get("http://jsonplaceholder.typicode.com/todos").json()
+    r = requests.get("http://jsonplaceholder.typicode.com/todos")
+    .json()
 
     for task in r:
         if task.get("userId") == int(eid):
